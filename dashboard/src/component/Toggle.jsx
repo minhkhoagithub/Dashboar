@@ -22,9 +22,27 @@ const ToggleToggle = ({ isOpen, onClose, user, onSave }) => {
     setFormData((prev) => ({ ...prev, date: formatted }));
   };
 
-  const handleSubmit = () => {
-    onSave(formData);
-    onClose();
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch(`https://67cd2e68dd7651e464ed8f46.mockapi.io/api/v1/id/${formData.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Cập nhật thất bại');
+      }
+  
+      const updatedUser = await response.json();
+      onSave(updatedUser); // Trả lại cho component cha nếu muốn cập nhật danh sách
+      onClose();
+    } catch (error) {
+      console.error('Lỗi khi gọi API:', error);
+      alert('Cập nhật không thành công!');
+    }
   };
 
   const footer = (
