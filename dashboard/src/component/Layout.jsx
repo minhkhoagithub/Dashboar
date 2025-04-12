@@ -7,9 +7,11 @@ import Dashboard from "../assets/Lab_05/Squares four 1.png";
 import Overview from "./Overview";
 import Create from "../assets/Lab_05/create.png";
 import EditUserModal from "./Toggle.jsx";
+import ModalAdd from "./ModalAdd.jsx";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from "primereact/button";
+
 const statusBodyTemplate = (rowData) => {
     const statusStyles = {
       new: "bg-blue-100 text-blue-700",
@@ -59,6 +61,11 @@ export default function Layout({ children }) {
       setSelectedCustomer(customer);
       setIsModalOpen(true);
     };
+    const [isAddOpen, setIsAddOpen] = useState(false);
+
+    const handleAddUser = (newUser) => {
+      setCustomers((prev) => [...prev, newUser]);
+    };
 
 console.log(customers);
      return(
@@ -79,11 +86,17 @@ console.log(customers);
                 <Menu/>
             </div>
             <div className="content">
+              <div className="relative h-4"> <button className="absolute right-10 bg-green-600 text-white font-bold  rounded-lg pl-4 pr-4" onClick={() => setIsAddOpen(true)}>Add</button></div>
+              <ModalAdd
+                isOpen={isAddOpen}
+                onClose={() => setIsAddOpen(false)}
+                onAdd={handleAddUser}
+              />
             <DataTable
                 value={customers}
                 paginator
                 rows={6}
-                className="p-datatable-customers custom-header"
+                className="p-datatable-customers custom-header mt-3"
                 dataKey="id"
                 responsiveLayout="scroll"
                 >
