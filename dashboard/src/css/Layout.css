@@ -26,6 +26,7 @@
   }
   .container > div.content {
     grid-area: content;
+    /* height: 100%; */
   }
   /* .container > div.footer {
     grid-area: footer;
