@@ -6,9 +6,10 @@ import Menu from "./Menu";
 import Dashboard from "../assets/Lab_05/Squares four 1.png";
 import Overview from "./Overview";
 import Create from "../assets/Lab_05/create.png";
-
+import EditUserModal from "./Toggle.jsx";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Button } from "primereact/button";
 const statusBodyTemplate = (rowData) => {
     const statusStyles = {
       new: "bg-blue-100 text-blue-700",
@@ -49,8 +50,17 @@ export default function Layout({ children }) {
             .finally(() => setLoading(false));
     }, []);
     const [customers, setCustomers] = useState([]);
+
+
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleEditClick = (customer) => {
+      setSelectedCustomer(customer);
+      setIsModalOpen(true);
+    };
+
 console.log(customers);
-    // console.log(data[1]);
      return(
         <div className="container">
             <div className="header">
@@ -83,11 +93,27 @@ console.log(customers);
                 <Column header="Order Value" body={orderValueTemplate} />
                 <Column header="Order Date" body={orderDateTemplate} />
                 <Column header="Status" body={statusBodyTemplate} />
-                <Column body={() => <img src={Create}/> } />
+                <Column body={(rowData) => <button onClick={() => handleEditClick(rowData)}>
+                                      <img src={Create} alt="Edit" />
+                                    </button> } />
                 
             </DataTable>
+            <EditUserModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              user={selectedCustomer}
+              onSave={(updatedCustomer) => {
+                const updatedList = customers.map((c) =>
+                  c.id === updatedCustomer.id ? updatedCustomer : c
+                );
+                setCustomers(updatedList);
+                setIsModalOpen(false);
+              }}
+            />
+            
             <span className="block ml-7 text-sm text-gray-500">{customers.length} results</span>
             </div>
+
         </div>
      )
 }
